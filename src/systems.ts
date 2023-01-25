@@ -1,6 +1,7 @@
 import { worldHeight, worldWidth } from './context'
+import { measureFps } from './diagnostics'
 import { pressedKeys } from './input'
-import { entities, gameState, player, scoreBoard } from './state'
+import { entities, fpsLabel, gameState, player, scoreBoard } from './state'
 import { getRandomColor } from './utils'
 
 export function setup() {
@@ -10,6 +11,7 @@ export function setup() {
   scoreBoard.score = 0
   entities.push(player)
   entities.push(scoreBoard)
+  entities.push(fpsLabel)
   pressedKeys.clear()
   gameState.isRunning = true
 }
@@ -37,6 +39,11 @@ export function checkCollisions() {
       }
     }
   }
+}
+
+export function updateFps(deltaTime: number) {
+  fpsLabel.fps = measureFps(deltaTime)
+  fpsLabel.text.text = `FPS: ${fpsLabel.fps.toFixed(0)}`
 }
 
 export function incrementScore() {

@@ -7,10 +7,11 @@ import {
   movePlayer,
   setup,
   spawnCubes,
+  updateFps,
   wrapEntities,
 } from './systems'
 
-export function update() {
+export function update(deltaTime: number) {
   if (gameState.isRunning) {
     spawnCubes()
     movePlayer()
@@ -18,6 +19,7 @@ export function update() {
     incrementScore()
     checkCollisions()
     wrapEntities()
+    updateFps(deltaTime)
   } else {
     if (pressedKeys.has(' ')) {
       setup()

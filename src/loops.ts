@@ -2,33 +2,39 @@ import { handleInput } from './input'
 import { render } from './render'
 import { update } from './update'
 
-export function naiveLoop() {
-  handleInput()
-  update()
-  render()
-  setTimeout(naiveLoop, 0)
+interface Loop {
+  tick(): void
 }
 
-export function displaySyncedLoop() {
-  handleInput()
-  update()
-  render()
-  requestAnimationFrame(displaySyncedLoop)
+export class DisplaySyncedLoop implements Loop {
+  private previousTotalTime = 0
+
+  tick = (totalTime: number = 0) => {
+    const deltaTime = totalTime - this.previousTotalTime
+    handleInput()
+    update(deltaTime)
+    render()
+    this.previousTotalTime = totalTime
+    requestAnimationFrame(this.tick)
+  }
 }
 
-export function timedLoop() {
-  handleInput()
-  update()
-  render()
-  setTimeout(timedLoop, 1000 / 60)
-}
+export class TimedLoop implements Loop {
+  private msPerFrame: number
+  private previousTotalTime = 0
 
-export function smarterTimedLoop() {
-  const msPerFrame = 1000 / 60
-  const now = performance.now()
-  handleInput()
-  update()
-  render()
-  const elapsed = performance.now() - now
-  setTimeout(smarterTimedLoop, Math.max(0, msPerFrame - elapsed))
+  constructor(fps: number) {
+    this.msPerFrame = 1000 / fps
+  }
+
+  tick = () => {
+    const totalTime = performance.now()
+    const deltaTime = totalTime - this.previousTotalTime
+    handleInput()
+    update(deltaTime)
+    render()
+    const elapsed = performance.now() - totalTime
+    this.previousTotalTime = totalTime
+    setTimeout(this.tick, Math.max(0, this.msPerFrame - elapsed))
+  }
 }

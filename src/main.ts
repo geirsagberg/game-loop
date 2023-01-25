@@ -1,7 +1,7 @@
-import { smarterTimedLoop } from './loops'
+import { TimedLoop } from './loops'
 import './style.css'
 import { setup } from './systems'
 
 setup()
 
-smarterTimedLoop()
+new TimedLoop(60).tick()
