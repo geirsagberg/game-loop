@@ -16,6 +16,8 @@ export const gameState = {
   isRunning: true,
 }
 
+const highScore = Number(window.localStorage.getItem('highScore') ?? 0)
+
 export const scoreBoard = {
   text: {
     x: 10,
@@ -24,5 +26,5 @@ export const scoreBoard = {
     color: 'white',
   },
   score: 0,
-  highScore: 0,
+  highScore,
 }
