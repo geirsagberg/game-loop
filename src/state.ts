@@ -24,4 +24,5 @@ export const scoreBoard = {
     color: 'white',
   },
   score: 0,
+  highScore: 0,
 }

@@ -8,10 +8,25 @@ export function setup() {
   player.rect.x = (worldWidth - player.rect.width) / 2
   player.rect.y = (worldHeight - player.rect.height) / 2
   scoreBoard.score = 0
+  checkHighScore()
   entities.push(player)
   entities.push(scoreBoard)
   pressedKeys.clear()
   gameState.isRunning = true
+}
+
+function checkHighScore() {
+  // Check if achieved high score
+  if (scoreBoard.highScore > 0) {
+    entities.push({
+      text: {
+        x: worldWidth - 136 - (Math.max(1, Math.abs(scoreBoard.highScore).toString().length)) * 12,
+        y: 32,
+        text: `High score: ${Math.floor(scoreBoard.highScore)}`,
+        color: 'white',
+      }
+    })
+  }
 }
 
 export function checkCollisions() {
@@ -36,6 +51,9 @@ export function checkCollisions() {
             color: 'white',
           },
         })
+        if (scoreBoard.score > scoreBoard.highScore) {
+          scoreBoard.highScore = scoreBoard.score
+        }
       }
     }
   }
