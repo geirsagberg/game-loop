@@ -36,6 +36,9 @@ export function checkCollisions() {
             color: 'white',
           },
         })
+        if (scoreBoard.score > scoreBoard.highScore) {
+          scoreBoard.highScore = scoreBoard.score
+        }
       }
     }
   }
