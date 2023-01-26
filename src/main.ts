@@ -1,7 +1,7 @@
-import { createFixedLoop } from './loops'
+import { createFixedIntervalLoop } from './loops'
 import './style.css'
 import { setup } from './systems'
 
 setup()
 
-createFixedLoop(60)()
+createFixedIntervalLoop(60)()

@@ -2,30 +2,20 @@ import { handleInput } from './input'
 import { render } from './render'
 import { update } from './update'
 
-export function createDisplaySyncedLoop() {
+export function createFixedIntervalLoop(targetUps: number) {
   let lastUpdate = 0
+  let accumulatedTime = 0
+  const updateInterval = 1000 / targetUps
   const tick = (now = 0) => {
     const deltaTime = now - lastUpdate
     lastUpdate = now
+    accumulatedTime += deltaTime
     handleInput()
-    update(deltaTime)
-    render()
-    requestAnimationFrame(tick)
-  }
-  return tick
-}
-
-export function createFixedLoop(targetFps: number) {
-  let lastUpdate = 0
-  const frameTime = 1000 / targetFps
-  const tick = (now = 0) => {
-    const deltaTime = now - lastUpdate
-    if (deltaTime > frameTime) {
-      lastUpdate = now - (deltaTime % frameTime)
-      handleInput()
-      update(deltaTime)
-      render()
+    while (accumulatedTime >= updateInterval) {
+      update()
+      accumulatedTime -= updateInterval
     }
+    render()
     requestAnimationFrame(tick)
   }
   return tick

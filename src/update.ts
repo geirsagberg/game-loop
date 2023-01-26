@@ -10,12 +10,12 @@ import {
   wrapEntities,
 } from './systems'
 
-export function update(deltaTime: number) {
+export function update() {
   if (gameState.isRunning) {
-    spawnCubes(deltaTime)
-    movePlayer(deltaTime)
-    moveCubes(deltaTime)
-    incrementScore(deltaTime)
+    spawnCubes()
+    movePlayer()
+    moveCubes()
+    incrementScore()
     checkCollisions()
     wrapEntities()
   } else {

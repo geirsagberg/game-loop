@@ -41,27 +41,28 @@ export function checkCollisions() {
   }
 }
 
-export function incrementScore(deltaTime: number) {
+export function incrementScore() {
   // Increment score while the player is alive
-  scoreBoard.score += 1 * deltaTime * normalizedFrameTime
+  scoreBoard.score += 1
   scoreBoard.text.text = `Score: ${Math.floor(scoreBoard.score)}`
 }
 
-export function moveCubes(deltaTime: number) {
+export function moveCubes() {
   for (const entity of entities) {
     if (entity.velocity) {
-      entity.rect.x += entity.velocity.x * deltaTime * normalizedFrameTime
-      entity.rect.y += entity.velocity.y * deltaTime * normalizedFrameTime
+      entity.rect.x += entity.velocity.x
+      entity.rect.y += entity.velocity.y
     }
   }
 }
 
-let timeSinceLastSpawn = 0
+let lastSpawn = 0
 
-export function spawnCubes(deltaTime: number) {
-  timeSinceLastSpawn += deltaTime
+export function spawnCubes() {
+  const now = performance.now()
+  const timeSinceLastSpawn = now - lastSpawn
   if (timeSinceLastSpawn > 1000) {
-    timeSinceLastSpawn = 0
+    lastSpawn = now
     const cubeSize = 32
     // Make sure the cube doesn't spawn too close to the player
     let x = Math.random() * worldWidth
@@ -110,10 +111,8 @@ export function wrapEntities() {
   }
 }
 
-const normalizedFrameTime = 60 / 1000
-
-export function movePlayer(deltaTime: number) {
-  const moveSpeed = 5 * deltaTime * normalizedFrameTime
+export function movePlayer() {
+  const moveSpeed = 5
   if (pressedKeys.has('ArrowLeft') || pressedKeys.has('a')) {
     player.rect.x -= moveSpeed
   }
