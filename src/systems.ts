@@ -53,6 +53,7 @@ export function checkCollisions() {
         })
         if (scoreBoard.score > scoreBoard.highScore) {
           scoreBoard.highScore = scoreBoard.score
+          window.localStorage.setItem('highScore', scoreBoard.highScore.toString())
         }
       }
     }
