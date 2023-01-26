@@ -1,7 +1,6 @@
 import { worldHeight, worldWidth } from './context'
-import { measureFps } from './diagnostics'
 import { pressedKeys } from './input'
-import { entities, fpsLabel, gameState, player, scoreBoard } from './state'
+import { entities, gameState, player, scoreBoard } from './state'
 import { getRandomColor } from './utils'
 
 export function setup() {
@@ -11,7 +10,6 @@ export function setup() {
   scoreBoard.score = 0
   entities.push(player)
   entities.push(scoreBoard)
-  entities.push(fpsLabel)
   pressedKeys.clear()
   gameState.isRunning = true
 }
@@ -32,7 +30,9 @@ export function checkCollisions() {
           text: {
             x: 50,
             y: worldHeight / 2,
-            text: `Game over! Your score is ${scoreBoard.score}. Press Space to restart.`,
+            text: `Game over! Your score is ${Math.floor(
+              scoreBoard.score
+            )}. Press Space to restart.`,
             color: 'white',
           },
         })
@@ -41,28 +41,27 @@ export function checkCollisions() {
   }
 }
 
-export function updateFps(deltaTime: number) {
-  fpsLabel.fps = measureFps(deltaTime)
-  fpsLabel.text.text = `FPS: ${fpsLabel.fps.toFixed(0)}`
-}
-
-export function incrementScore() {
+export function incrementScore(deltaTime: number) {
   // Increment score while the player is alive
-  scoreBoard.score += 1
+  scoreBoard.score += 1 * deltaTime * normalizedFrameTime
   scoreBoard.text.text = `Score: ${Math.floor(scoreBoard.score)}`
 }
 
-export function moveCubes() {
+export function moveCubes(deltaTime: number) {
   for (const entity of entities) {
     if (entity.velocity) {
-      entity.rect.x += entity.velocity.x
-      entity.rect.y += entity.velocity.y
+      entity.rect.x += entity.velocity.x * deltaTime * normalizedFrameTime
+      entity.rect.y += entity.velocity.y * deltaTime * normalizedFrameTime
     }
   }
 }
 
-export function spawnCubes() {
-  if (Math.random() < 0.01) {
+let timeSinceLastSpawn = 0
+
+export function spawnCubes(deltaTime: number) {
+  timeSinceLastSpawn += deltaTime
+  if (timeSinceLastSpawn > 1000) {
+    timeSinceLastSpawn = 0
     const cubeSize = 32
     // Make sure the cube doesn't spawn too close to the player
     let x = Math.random() * worldWidth
@@ -111,8 +110,10 @@ export function wrapEntities() {
   }
 }
 
-export function movePlayer() {
-  const moveSpeed = 5
+const normalizedFrameTime = 60 / 1000
+
+export function movePlayer(deltaTime: number) {
+  const moveSpeed = 5 * deltaTime * normalizedFrameTime
   if (pressedKeys.has('ArrowLeft') || pressedKeys.has('a')) {
     player.rect.x -= moveSpeed
   }

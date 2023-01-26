@@ -25,13 +25,3 @@ export const scoreBoard = {
   },
   score: 0,
 }
-
-export const fpsLabel = {
-  text: {
-    x: 10,
-    y: worldHeight - 20,
-    text: 'FPS: 0',
-    color: 'white',
-  },
-  fps: 0,
-}

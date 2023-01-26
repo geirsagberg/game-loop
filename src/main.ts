@@ -1,7 +1,7 @@
-import { TimedLoop } from './loops'
+import { createFixedLoop } from './loops'
 import './style.css'
 import { setup } from './systems'
 
 setup()
 
-new TimedLoop(60).tick()
+createFixedLoop(60)()

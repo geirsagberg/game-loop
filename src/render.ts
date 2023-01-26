@@ -1,4 +1,5 @@
 import { context, worldHeight, worldWidth } from './context'
+import { measureFps } from './diagnostics'
 import { entities } from './state'
 
 function drawRect(rect: Rect) {
@@ -12,7 +13,14 @@ function drawText(text: TextObj) {
   context.fillText(text.text, text.x, text.y)
 }
 
+let lastRender = 0
+
 export function render() {
+  const now = performance.now()
+  const elapsed = now - lastRender
+  lastRender = now
+  const fps = measureFps(elapsed)
+
   context.clearRect(0, 0, worldWidth, worldHeight)
 
   for (const entity of entities) {
@@ -23,4 +31,10 @@ export function render() {
       drawText(entity.text)
     }
   }
+  drawText({
+    x: 10,
+    y: worldHeight - 20,
+    text: `FPS: ${fps.toFixed(0)}`,
+    color: 'white',
+  })
 }
